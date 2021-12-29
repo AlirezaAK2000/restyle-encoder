@@ -28,6 +28,7 @@ def run():
 
     # update test options with options used during training
     ckpt = torch.load(test_opts.checkpoint_path, map_location='cpu')
+    print(ckpt.keys())
     opts = ckpt['opts']
     opts.update(vars(test_opts))
     opts = Namespace(**opts)
