@@ -79,14 +79,14 @@ def run():
             global_time.append(toc - tic)
 
         for i in range(input_batch.shape[0]):
-            # results = [tensor2im(result_batch[i][iter_idx]) for iter_idx in range(opts.n_iters_per_batch)]
-            # im_path = dataset.paths[global_i]
+            results = [tensor2im(result_batch[i][iter_idx]) for iter_idx in range(opts.n_iters_per_batch)]
+            im_path = dataset.paths[global_i]
 
             # save step-by-step results side-by-side
-            # for idx, result in enumerate(results):
-            #     save_dir = os.path.join(out_path_results, str(idx))
-            #     os.makedirs(save_dir, exist_ok=True)
-                # result.resize(resize_amount).save(os.path.join(save_dir, os.path.basename(im_path)))
+            for idx, result in enumerate(results):
+                save_dir = os.path.join(out_path_results, str(idx))
+                os.makedirs(save_dir, exist_ok=True)
+                result.resize(resize_amount).save(os.path.join(save_dir, os.path.basename(im_path)))
 
             # store all latents with dict pairs (image_name, latents)
             all_latents.append(result_latents[i][-1])
