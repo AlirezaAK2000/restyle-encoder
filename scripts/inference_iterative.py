@@ -66,7 +66,7 @@ def run():
 
     global_i = 0
     global_time = []
-    all_latents = {}
+    all_latents = []
     for input_batch in tqdm(dataloader):
         if global_i >= opts.n_images:
             break
@@ -79,17 +79,17 @@ def run():
             global_time.append(toc - tic)
 
         for i in range(input_batch.shape[0]):
-            results = [tensor2im(result_batch[i][iter_idx]) for iter_idx in range(opts.n_iters_per_batch)]
-            im_path = dataset.paths[global_i]
+            # results = [tensor2im(result_batch[i][iter_idx]) for iter_idx in range(opts.n_iters_per_batch)]
+            # im_path = dataset.paths[global_i]
 
             # save step-by-step results side-by-side
-            for idx, result in enumerate(results):
-                save_dir = os.path.join(out_path_results, str(idx))
-                os.makedirs(save_dir, exist_ok=True)
-                result.resize(resize_amount).save(os.path.join(save_dir, os.path.basename(im_path)))
+            # for idx, result in enumerate(results):
+            #     save_dir = os.path.join(out_path_results, str(idx))
+            #     os.makedirs(save_dir, exist_ok=True)
+                # result.resize(resize_amount).save(os.path.join(save_dir, os.path.basename(im_path)))
 
             # store all latents with dict pairs (image_name, latents)
-            all_latents[os.path.basename(im_path)] = result_latents[i]
+            all_latents.append(result_latents[i][-1])
 
             global_i += 1
 
@@ -100,7 +100,12 @@ def run():
     with open(stats_path, 'w') as f:
         f.write(result_str)
 
+    
+    
     # save all latents as npy file
+    all_latents = np.concatenate([a[None,:] for a in all_latents] , axis=0)
+    # all_latents = np.concatenate([el[:,None] for el in all_latents])
+    print(all_latents.shape)
     np.save(os.path.join(test_opts.exp_dir, 'latents.npy'), all_latents)
 
 
